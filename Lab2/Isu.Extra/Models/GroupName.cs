@@ -4,12 +4,10 @@ namespace Isu.Models;
 
 public class GroupName
 {
-    private const int LENGTH = 5;
-    private const int MAXNUMBER = 999;
-    private const int MINNUMBER = 100;
+    private const int LENGTH = 6;
+    private const int MAXNUMBER = 10000;
+    private const int MINNUMBER = 1000;
     private const int MAXCOURSE = 6;
-
-    private char[] _correctsSymbols = new char[] { 'A', 'B', 'C' };
 
     public GroupName(string name)
     {
@@ -19,9 +17,12 @@ public class GroupName
         }
 
         Name = name;
+        MegaFacSymbol = name[0];
     }
 
     public string Name { get; private set; }
+
+    public char MegaFacSymbol { get; }
 
     public CourseNumber GetCourseNumber()
     {
@@ -41,7 +42,7 @@ public class GroupName
     private bool IsCorrectSymbol(string name)
     {
         char symbol = name[0];
-        return _correctsSymbols.Contains(symbol);
+        return symbol >= 'A' && symbol <= 'Z';
     }
 
     private bool IsCorrectNumber(string name)

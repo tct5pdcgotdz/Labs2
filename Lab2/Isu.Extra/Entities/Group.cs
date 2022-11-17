@@ -1,3 +1,4 @@
+using Isu.Extra.Entities;
 using Isu.Models;
 using Isu.Tools;
 namespace Isu.Entities;
@@ -5,6 +6,8 @@ namespace Isu.Entities;
 public class Group
 {
     private const int MAXSTUDENTCOUNT = 30;
+
+    private Ti
 
     public Group(GroupName groupName)
     {
@@ -33,5 +36,10 @@ public class Group
     public int GetCountVacandePlaces()
     {
         return MAXSTUDENTCOUNT - StudentsList.Count;
+    }
+
+    public TimeTableDay CreateTimeTable()
+    {
+
     }
 }
