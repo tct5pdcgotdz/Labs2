@@ -35,14 +35,12 @@ namespace Isu.Extra.Test
 
             // Act
             Group group = isuExtraService.AddGroup(groupName);
-            Student student = isuExtraService.AddStudent(group, "Ivan");
-            ClassRoom classRoom = isuExtraService.AddClassRoom(789);
             Teacher teacher = isuExtraService.AddTeacher("Petr");
+            ClassRoom classRoom = isuExtraService.AddClassRoom(789);
             Lesson lesson = isuExtraService.AddLesson(DaysWeek.Mon, LessonsTimes.St8_20En9_50, group, teacher, classRoom);
-
             group.PutLessonToTimeTable(lesson);
 
-            group.AddStudent(student);
+            Student student = isuExtraService.AddStudent(group, "Ivan");
 
             MegaFaculty megaFaculty = isuExtraService.CreateMegaFaculty(megaName);
             megaFaculty.AddGroup(group);
@@ -50,9 +48,9 @@ namespace Isu.Extra.Test
             Flow flow = ognp.CreateFlow("3.14", 30);
             Teacher teacherOGNP = isuExtraService.AddTeacher("Arthur");
             Lesson lessonOGNP = isuExtraService.AddLesson(DaysWeek.Mon, LessonsTimes.St10_00En11_30, group, teacherOGNP, classRoom);
-            flow.AddLesson(lessonOGNP);
+            flow.PutLessonIntoTimeTable(lessonOGNP);
 
-            ognp.AddToCourse(student, flow);
+            student.AddOGNP(flow);
 
             // Asserts
             Assert.Contains(student, flow.StudentList);
@@ -83,28 +81,18 @@ namespace Isu.Extra.Test
         }
 
         [Fact]
-        public void CreateTwotLessonsAtTheSameClassRoomAndTimesForDiffGroups_ScheduleIntersectionsException()
+        public void AddStudentWithoutOGNP_GroupContainsSrudentWithoutOGNP()
         {
             // Arrange
-            var isuExtraService = new IsuExtraService();
+            var isuSerivce = new IsuExtraService();
             var groupName = new GroupName("K33455");
-            var groupName2 = new GroupName("K45457");
 
             // Act
-            Group group = isuExtraService.AddGroup(groupName);
-            Group group2 = isuExtraService.AddGroup(groupName2);
-            ClassRoom classRoom = isuExtraService.AddClassRoom(789);
-            Teacher teacher = isuExtraService.AddTeacher("Petr");
-            Teacher teacher2 = isuExtraService.AddTeacher("Ivan");
-            Lesson lesson = isuExtraService.AddLesson(DaysWeek.Mon, LessonsTimes.St8_20En9_50, group, teacher, classRoom);
-            Lesson lesson2 = isuExtraService.AddLesson(DaysWeek.Mon, LessonsTimes.St8_20En9_50, group2, teacher2, classRoom);
+            Group group = isuSerivce.AddGroup(groupName);
+            Student student = isuSerivce.AddStudent(group, "Ivan");
 
-            // Asserts
-            Assert.Throws<ScheduleIntersectionsException>(() =>
-            {
-                group.PutLessonToTimeTable(lesson);
-                group2.PutLessonToTimeTable(lesson2);
-            });
+            // Assert
+            Assert.Contains(student, group.GetStudentsListWithoutOGNP());
         }
     }
 }

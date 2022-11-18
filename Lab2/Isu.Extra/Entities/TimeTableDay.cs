@@ -15,12 +15,25 @@ namespace Isu.Extra.Entities
 
         public void PutLessonToTimeTable(Lesson lesson)
         {
-            if (Lessons[(int)lesson.Time - 1] is not null)
+            if (Lessons[(int)lesson.Time] is not null)
             {
                 throw new ScheduleIntersectionsException();
             }
 
-            Lessons[(int)lesson.Time - 1] = lesson;
+            Lessons[(int)lesson.Time] = lesson;
+        }
+
+        public void InjectTimeTableDay(TimeTableDay tableDay)
+        {
+            foreach (Lesson lesson in tableDay.Lessons)
+            {
+                if (lesson is null)
+                {
+                    continue;
+                }
+
+                PutLessonToTimeTable(lesson);
+            }
         }
     }
 }

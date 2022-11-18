@@ -7,14 +7,16 @@ public class Student
 {
     public Student(string name, Group group)
     {
+        TimeTable = new TimeTable();
+
         Name = name;
         Group = group;
+
         Id = StudentId.GenerateNewId();
-        TimeTable = new TimeTable();
     }
 
-    public TimeTable TimeTable { get; }
-
+    public Flow? OGNPFlow { get; private set; }
+    public TimeTable TimeTable { get; private set; }
     public int Id { get; }
     public string Name { get; }
     public Group Group { get; private set; }
@@ -23,6 +25,18 @@ public class Student
     {
         LeaveCurrentGroup();
         AddToNewGroup(newGroup);
+    }
+
+    public void AddLessonsToTimeTable(TimeTable timeTable)
+    {
+        TimeTable.PutLessonsIntoTimeTable(timeTable);
+    }
+
+    public void AddOGNP(Flow flow)
+    {
+        flow.AddStudent(this);
+        OGNPFlow = flow;
+        AddLessonsToTimeTable(flow.TimeTable);
     }
 
     private void LeaveCurrentGroup()

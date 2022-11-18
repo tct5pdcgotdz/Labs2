@@ -1,6 +1,4 @@
-﻿using Isu.Entities;
-
-namespace Isu.Extra.Entities
+﻿namespace Isu.Extra.Entities
 {
     public class OGNP
     {
@@ -21,12 +19,6 @@ namespace Isu.Extra.Entities
         public List<Flow> GetFlows()
         {
             return _flowsList;
-        }
-
-        public void AddToCourse(Student student, Flow flow)
-        {
-            flow.AddStudent(student);
-            flow.RemoveStudent(student);
         }
     }
 }

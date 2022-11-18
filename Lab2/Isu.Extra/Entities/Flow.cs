@@ -15,7 +15,7 @@ namespace Isu.Extra.Entities
             TimeTable = new TimeTable();
         }
 
-        public TimeTable TimeTable { get; }
+        public TimeTable TimeTable { get; private set; }
 
         public List<Student> StudentList { get; }
 
@@ -29,7 +29,7 @@ namespace Isu.Extra.Entities
             StudentList.Remove(student);
         }
 
-        public void AddLesson(Lesson lesson)
+        public void PutLessonIntoTimeTable(Lesson lesson)
         {
             TimeTable.PutLessonIntoTimeTable(lesson);
         }

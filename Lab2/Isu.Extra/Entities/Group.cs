@@ -41,6 +41,11 @@ public class Group
         return MAXSTUDENTCOUNT - StudentsList.Count;
     }
 
+    public List<Student> GetStudentsListWithoutOGNP()
+    {
+        return _studentsList.Where(student => student.OGNPFlow is null).ToList();
+    }
+
     public void PutLessonToTimeTable(Lesson lesson)
     {
         lesson.ClassRoom.TakeClass(lesson);

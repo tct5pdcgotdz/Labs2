@@ -2,7 +2,7 @@
 {
     public enum LessonsTimes
     {
-        St8_20En9_50 = 1,
+        St8_20En9_50 = 0,
         St10_00En11_30,
         St11_40En13_10,
         St13_30En15_00,

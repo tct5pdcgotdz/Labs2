@@ -19,18 +19,15 @@
 
         public void PutLessonsIntoTimeTable(TimeTable timeTable)
         {
-            for (int i = 0; i < timeTable.TimeTableWeek.Length; i++)
+            for (int i = 0; i < DAYSPERWEEK; i++)
             {
-                foreach (Lesson lesson in timeTable.TimeTableWeek[i].Lessons)
-                {
-                    PutLessonIntoTimeTable(lesson);
-                }
+                TimeTableWeek[i].InjectTimeTableDay(timeTable.TimeTableWeek[i]);
             }
         }
 
         private void DefaultInitial()
         {
-            for (int i = 0; i < TimeTableWeek.Length; i++)
+            for (int i = 0; i < DAYSPERWEEK; i++)
             {
                 TimeTableWeek[i] = new TimeTableDay();
             }
