@@ -86,11 +86,17 @@ namespace Isu.Services
 
         public Student? FindStudent(int id)
         {
-            Student? student = (from g in _groups
-                               from s in g.StudentsList
-                               where s.Id.Equals(id)
-                               select s).FirstOrDefault();
-            return student;
+            Student? student = null;
+            foreach (Group group in _groups)
+            {
+                student = group.StudentsList.Where(student => student.Id.Equals(id)).FirstOrDefault();
+                if (student is not null)
+                {
+                    return student;
+                }
+            }
+
+            return null;
         }
 
         public List<Student> FindStudents(GroupName groupName)

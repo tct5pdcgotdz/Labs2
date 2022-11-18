@@ -7,6 +7,11 @@ public class Student
 {
     public Student(string name, Group group)
     {
+        if (string.IsNullOrEmpty(name))
+        {
+            throw new ArgumentNullException("Invalid Person name");
+        }
+
         TimeTable = new TimeTable();
 
         Name = name;
