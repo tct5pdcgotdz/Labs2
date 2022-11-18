@@ -1,23 +1,26 @@
 using Isu.Extra.Entities;
 using Isu.Models;
 using Isu.Tools;
+
 namespace Isu.Entities;
 
 public class Group
 {
     private const int MAXSTUDENTCOUNT = 30;
 
-    private Ti
+    private List<Student> _studentsList;
 
     public Group(GroupName groupName)
     {
-        StudentsList = new List<Student>();
+        TimeTable = new TimeTable();
+        _studentsList = new List<Student>();
 
         GroupName = groupName;
         CourseNumber = groupName.GetCourseNumber();
     }
 
-    public List<Student> StudentsList { get; }
+    public TimeTable TimeTable { get; }
+    public IReadOnlyCollection<Student> StudentsList => _studentsList;
     public CourseNumber CourseNumber { get;  }
     public GroupName GroupName { get; }
 
@@ -25,12 +28,12 @@ public class Group
     {
         if (GetCountVacandePlaces() == 0)
             throw new AddToFullGroupException();
-        StudentsList.Add(student);
+        _studentsList.Add(student);
     }
 
     public void RemoveStudent(Student student)
     {
-        StudentsList.Remove(student);
+        _studentsList.Remove(student);
     }
 
     public int GetCountVacandePlaces()
@@ -38,8 +41,9 @@ public class Group
         return MAXSTUDENTCOUNT - StudentsList.Count;
     }
 
-    public TimeTableDay CreateTimeTable()
+    public void PutLessonToTimeTable(Lesson lesson)
     {
-
+        lesson.ClassRoom.TakeClass(lesson);
+        TimeTable.PutLessonIntoTimeTable(lesson);
     }
 }

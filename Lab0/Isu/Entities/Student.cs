@@ -6,6 +6,11 @@ public class Student
 {
     public Student(string name, Group group)
     {
+        if (string.IsNullOrEmpty(name))
+        {
+            throw new ArgumentNullException("Invalid Person name");
+        }
+
         Name = name;
         Group = group;
         Id = StudentId.GenerateNewId();

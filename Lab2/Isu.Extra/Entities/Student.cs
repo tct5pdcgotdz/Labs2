@@ -1,3 +1,4 @@
+using Isu.Extra.Entities;
 using Isu.Models;
 
 namespace Isu.Entities;
@@ -9,7 +10,10 @@ public class Student
         Name = name;
         Group = group;
         Id = StudentId.GenerateNewId();
+        TimeTable = new TimeTable();
     }
+
+    public TimeTable TimeTable { get; }
 
     public int Id { get; }
     public string Name { get; }

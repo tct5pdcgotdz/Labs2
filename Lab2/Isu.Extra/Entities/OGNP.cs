@@ -26,6 +26,7 @@ namespace Isu.Extra.Entities
         public void AddToCourse(Student student, Flow flow)
         {
             flow.AddStudent(student);
+            flow.RemoveStudent(student);
         }
     }
 }

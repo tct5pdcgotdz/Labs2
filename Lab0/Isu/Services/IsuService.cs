@@ -58,32 +58,33 @@ namespace Isu.Services
 
         public List<Student> FindStudents(GroupName groupName)
         {
-            List<Student>? resList = (from g in _groups
+            var resList = (from g in _groups
                                       where g.GroupName.Equals(groupName)
-                                      select g).FirstOrDefault()?.StudentsList;
+                                      select g).FirstOrDefault()?.StudentsList.ToList();
             return resList == null ? new List<Student>() : resList;
         }
 
         public List<Student> FindStudents(CourseNumber courseNumber)
         {
-            List<Student>? resList = (from g in _groups
+            var resList = (from g in _groups
                                       where g.CourseNumber.Equals(courseNumber)
-                                      select g).FirstOrDefault()?.StudentsList;
+                                      select g).FirstOrDefault()?.StudentsList.ToList();
             return resList == null ? new List<Student>() : resList;
         }
 
         public Student GetStudent(int id)
         {
-            Student? student = (from g in _groups
-                                from s in g.StudentsList
-                                where s.Id.Equals(id)
-                                select s).FirstOrDefault();
-            if (student == null)
+            Student? student = null;
+            foreach (Group group in _groups)
             {
-                throw new NotExistStudentIdException();
+                student = group.StudentsList.Where(student => student.Id.Equals(id)).FirstOrDefault();
+                if (student is not null)
+                {
+                    return student;
+                }
             }
 
-            return student;
+            throw new NotExistStudentIdException();
         }
     }
 }

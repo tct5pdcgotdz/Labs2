@@ -19,9 +19,13 @@ namespace Isu.Extra.Entities
             _symbol = megaFacultyName.ShortName;
         }
 
+        public IReadOnlyCollection<OGNP> ListsOGNP => _listsOGNP;
+
         public OGNP CreateOGNP(string name)
         {
-            return new OGNP(name);
+            var ognp = new OGNP(name);
+            _listsOGNP.Add(ognp);
+            return ognp;
         }
 
         public void AddGroup(Group group)

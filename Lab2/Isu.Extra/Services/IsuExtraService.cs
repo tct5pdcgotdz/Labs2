@@ -1,5 +1,6 @@
 ﻿using Isu.Entities;
 using Isu.Extra.Entities;
+using Isu.Extra.Models;
 using Isu.Extra.Services;
 using Isu.Models;
 using Isu.Tools;
@@ -9,15 +10,39 @@ namespace Isu.Services
     public class IsuExtraService : IIsuService, IIsuExttraService
     {
         private readonly List<Group> _groups;
+        private readonly List<ClassRoom> _classRooms;
         public IsuExtraService()
         {
             _groups = new List<Group>();
+            _classRooms = new List<ClassRoom>();
         }
 
         public Group AddGroup(GroupName name)
         {
             var group = new Group(name);
             return group;
+        }
+
+        public Teacher AddTeacher(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentException("Invalid teacher name");
+            }
+
+            return new Teacher(name);
+        }
+
+        public ClassRoom AddClassRoom(int number)
+        {
+            var classRoom = new ClassRoom(number);
+            _classRooms.Add(classRoom);
+            return classRoom;
+        }
+
+        public Lesson AddLesson(DaysWeek day, LessonsTimes time, Group group, Teacher teacher, ClassRoom classRoom)
+        {
+            return new Lesson(day, time, group, teacher, classRoom);
         }
 
         public Student AddStudent(Group group, string name)
@@ -70,32 +95,33 @@ namespace Isu.Services
 
         public List<Student> FindStudents(GroupName groupName)
         {
-            List<Student>? resList = (from g in _groups
+            var resList = (from g in _groups
                                       where g.GroupName.Equals(groupName)
-                                      select g).FirstOrDefault()?.StudentsList;
+                                      select g).FirstOrDefault()?.StudentsList.ToList();
             return resList == null ? new List<Student>() : resList;
         }
 
         public List<Student> FindStudents(CourseNumber courseNumber)
         {
-            List<Student>? resList = (from g in _groups
+            var resList = (from g in _groups
                                       where g.CourseNumber.Equals(courseNumber)
-                                      select g).FirstOrDefault()?.StudentsList;
+                                      select g).FirstOrDefault()?.StudentsList.ToList();
             return resList == null ? new List<Student>() : resList;
         }
 
         public Student GetStudent(int id)
         {
-            Student? student = (from g in _groups
-                                from s in g.StudentsList
-                                where s.Id.Equals(id)
-                                select s).FirstOrDefault();
-            if (student == null)
+            Student? student = null;
+            foreach (Group group in _groups)
             {
-                throw new NotExistStudentIdException();
+                student = group.StudentsList.Where(student => student.Id.Equals(id)).FirstOrDefault();
+                if (student is not null)
+                {
+                    return student;
+                }
             }
 
-            return student;
+            throw new NotExistStudentIdException();
         }
     }
 }

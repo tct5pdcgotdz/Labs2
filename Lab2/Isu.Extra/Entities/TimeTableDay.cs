@@ -5,21 +5,22 @@ namespace Isu.Extra.Entities
     public class TimeTableDay
     {
         private const int MAXCOUNTLESSONSPERDAY = 6;
-        private Lesson[] lessons;
 
         public TimeTableDay()
         {
-            lessons = new Lesson[MAXCOUNTLESSONSPERDAY];
+            Lessons = new Lesson[MAXCOUNTLESSONSPERDAY];
         }
 
-        public void PutLessonToTimeTable(Lesson lesson, int numberLesson)
+        public Lesson[] Lessons { get; }
+
+        public void PutLessonToTimeTable(Lesson lesson)
         {
-            if (lessons[numberLesson - 1] is null)
+            if (Lessons[(int)lesson.Time - 1] is not null)
             {
                 throw new ScheduleIntersectionsException();
             }
 
-            lessons[numberLesson - 1] = lesson;
+            Lessons[(int)lesson.Time - 1] = lesson;
         }
     }
 }

@@ -3,24 +3,36 @@
     public class TimeTable
     {
         private const int DAYSPERWEEK = 7;
-        private TimeTableDay[] timeTableWeek;
 
         public TimeTable()
         {
-            timeTableWeek = new TimeTableDay[DAYSPERWEEK];
+            TimeTableWeek = new TimeTableDay[DAYSPERWEEK];
             DefaultInitial();
         }
 
-        public void PutLessonIntoTimeTable(Lesson lesson, DayOfWeek day, int numberLesson)
+        public TimeTableDay[] TimeTableWeek { get; private set; }
+
+        public void PutLessonIntoTimeTable(Lesson lesson)
         {
-            timeTableWeek[(int)day].PutLessonToTimeTable(lesson, numberLesson);
+            TimeTableWeek[(int)lesson.Day].PutLessonToTimeTable(lesson);
+        }
+
+        public void PutLessonsIntoTimeTable(TimeTable timeTable)
+        {
+            for (int i = 0; i < timeTable.TimeTableWeek.Length; i++)
+            {
+                foreach (Lesson lesson in timeTable.TimeTableWeek[i].Lessons)
+                {
+                    PutLessonIntoTimeTable(lesson);
+                }
+            }
         }
 
         private void DefaultInitial()
         {
-            for (int i = 0; i < timeTableWeek.Length; i++)
+            for (int i = 0; i < TimeTableWeek.Length; i++)
             {
-                timeTableWeek[i] = new TimeTableDay();
+                TimeTableWeek[i] = new TimeTableDay();
             }
         }
     }
