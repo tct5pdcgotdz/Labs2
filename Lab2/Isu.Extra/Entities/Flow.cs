@@ -1,4 +1,4 @@
-﻿using Isu.Entities;
+﻿using Isu.Extra.StudentVersions;
 
 namespace Isu.Extra.Entities
 {
@@ -8,7 +8,7 @@ namespace Isu.Extra.Entities
         private string _name;
         public Flow(int maxPeopleCount, string name)
         {
-            StudentList = new List<Student>();
+            StudentList = new List<ExtraStudent>();
 
             _maxPeopleCount = maxPeopleCount;
             _name = name;
@@ -17,14 +17,14 @@ namespace Isu.Extra.Entities
 
         public TimeTable TimeTable { get; private set; }
 
-        public List<Student> StudentList { get; }
+        public List<ExtraStudent> StudentList { get; }
 
-        public void AddStudent(Student student)
+        public void AddStudent(ExtraStudent student)
         {
             StudentList.Add(student);
         }
 
-        public void RemoveStudent(Student student)
+        public void RemoveStudent(ExtraStudent student)
         {
             StudentList.Remove(student);
         }

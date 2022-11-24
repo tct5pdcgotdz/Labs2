@@ -1,4 +1,4 @@
-﻿namespace Isu.Models
+﻿namespace Isu.Extra.Models
 {
     public class StudentId
     {

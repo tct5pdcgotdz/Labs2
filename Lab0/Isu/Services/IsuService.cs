@@ -34,6 +34,8 @@ namespace Isu.Services
 
         public void ChangeStudentGroup(Student student, Group newGroup)
         {
+            student.Group.RemoveStudent(student);
+            newGroup.AddStudent(student);
             student.ChangeGroup(newGroup);
         }
 

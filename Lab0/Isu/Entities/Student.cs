@@ -22,18 +22,6 @@ public class Student
 
     public void ChangeGroup(Group newGroup)
     {
-        LeaveCurrentGroup();
-        AddToNewGroup(newGroup);
-    }
-
-    private void LeaveCurrentGroup()
-    {
-        Group.RemoveStudent(this);
-    }
-
-    private void AddToNewGroup(Group newGroup)
-    {
-        newGroup.AddStudent(this);
         Group = newGroup;
     }
 }

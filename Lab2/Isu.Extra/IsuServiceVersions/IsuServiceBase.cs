@@ -1,48 +1,22 @@
-﻿using Isu.Entities;
-using Isu.Extra.Entities;
+﻿using Isu.Extra.GroupVersions;
 using Isu.Extra.Models;
-using Isu.Extra.Services;
-using Isu.Models;
-using Isu.Tools;
+using Isu.Extra.StudentVersions;
+using Isu.Extra.Tools;
 
-namespace Isu.Services
+namespace Isu.Extra.IsuServiceVersions
 {
-    public class IsuExtraService : IIsuService, IIsuExttraService
+    public abstract class IsuServiceBase : IIsuService
     {
         private readonly List<Group> _groups;
-        private readonly List<ClassRoom> _classRooms;
-        public IsuExtraService()
+        public IsuServiceBase()
         {
             _groups = new List<Group>();
-            _classRooms = new List<ClassRoom>();
         }
 
         public Group AddGroup(GroupName name)
         {
             var group = new Group(name);
             return group;
-        }
-
-        public Teacher AddTeacher(string name)
-        {
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                throw new ArgumentException("Invalid teacher name");
-            }
-
-            return new Teacher(name);
-        }
-
-        public ClassRoom AddClassRoom(int number)
-        {
-            var classRoom = new ClassRoom(number);
-            _classRooms.Add(classRoom);
-            return classRoom;
-        }
-
-        public Lesson AddLesson(DaysWeek day, LessonsTimes time, Group group, Teacher teacher, ClassRoom classRoom)
-        {
-            return new Lesson(day, time, group, teacher, classRoom);
         }
 
         public Student AddStudent(Group group, string name)
@@ -59,19 +33,11 @@ namespace Isu.Services
             return student;
         }
 
-        public void AddStudentToOGNP(Student student, OGNP ognp)
-        {
-            throw new NotImplementedException();
-        }
-
         public void ChangeStudentGroup(Student student, Group newGroup)
         {
+            student.Group.RemoveStudent(student);
+            newGroup.AddStudent(student);
             student.ChangeGroup(newGroup);
-        }
-
-        public MegaFaculty CreateMegaFaculty(MegaFacultyName facultyName)
-        {
-            return new MegaFaculty(facultyName);
         }
 
         public Group? FindGroup(GroupName groupName)
@@ -102,16 +68,16 @@ namespace Isu.Services
         public List<Student> FindStudents(GroupName groupName)
         {
             var resList = (from g in _groups
-                                      where g.GroupName.Equals(groupName)
-                                      select g).FirstOrDefault()?.StudentsList.ToList();
+                           where g.GroupName.Equals(groupName)
+                           select g).FirstOrDefault()?.StudentsList.ToList();
             return resList == null ? new List<Student>() : resList;
         }
 
         public List<Student> FindStudents(CourseNumber courseNumber)
         {
             var resList = (from g in _groups
-                                      where g.CourseNumber.Equals(courseNumber)
-                                      select g).FirstOrDefault()?.StudentsList.ToList();
+                           where g.CourseNumber.Equals(courseNumber)
+                           select g).FirstOrDefault()?.StudentsList.ToList();
             return resList == null ? new List<Student>() : resList;
         }
 

@@ -1,9 +1,9 @@
-﻿using Isu.Entities;
-using Isu.Extra.Entities;
+﻿using Isu.Extra.Entities;
+using Isu.Extra.GroupVersions;
+using Isu.Extra.IsuServiceVersions;
 using Isu.Extra.Models;
+using Isu.Extra.StudentVersions;
 using Isu.Extra.Tools;
-using Isu.Models;
-using Isu.Services;
 using Xunit;
 
 namespace Isu.Extra.Test
@@ -14,7 +14,8 @@ namespace Isu.Extra.Test
         public void AddNewOGNP_MegaFacHasNewOGNP()
         {
             // Arrange
-            var isuExtraService = new IsuExtraService();
+            var isuService = new IsuService();
+            var isuExtraService = new IsuExtraService(isuService);
             var megaName = new MegaFacultyName("КТиУ", 'K');
 
             // Act
@@ -29,18 +30,19 @@ namespace Isu.Extra.Test
         public void AddStudentToOGNP_OGNPHasStudent()
         {
             // Arrange
-            var isuExtraService = new IsuExtraService();
+            var isuService = new IsuService();
+            var isuExtraService = new IsuExtraService(isuService);
             var megaName = new MegaFacultyName("КТиУ", 'K');
             var groupName = new GroupName("K33455");
 
             // Act
-            Group group = isuExtraService.AddGroup(groupName);
+            ExtraGroup group = isuExtraService.AddGroup(groupName);
             Teacher teacher = isuExtraService.AddTeacher("Petr");
             ClassRoom classRoom = isuExtraService.AddClassRoom(789);
             Lesson lesson = isuExtraService.AddLesson(DaysWeek.Mon, LessonsTimes.St8_20En9_50, group, teacher, classRoom);
             group.PutLessonToTimeTable(lesson);
 
-            Student student = isuExtraService.AddStudent(group, "Ivan");
+            ExtraStudent student = isuExtraService.AddStudent(group, "Ivan");
 
             MegaFaculty megaFaculty = isuExtraService.CreateMegaFaculty(megaName);
             megaFaculty.AddGroup(group);
@@ -50,7 +52,7 @@ namespace Isu.Extra.Test
             Lesson lessonOGNP = isuExtraService.AddLesson(DaysWeek.Mon, LessonsTimes.St10_00En11_30, group, teacherOGNP, classRoom);
             flow.PutLessonIntoTimeTable(lessonOGNP);
 
-            student.AddOGNP(flow);
+            isuExtraService.AddToOGNP(student, flow);
 
             // Asserts
             Assert.Contains(student, flow.StudentList);
@@ -60,11 +62,12 @@ namespace Isu.Extra.Test
         public void CreateTwoLessonsAtTheSameTimeForOneGroup_ScheduleIntersectionsException()
         {
             // Arrange
-            var isuExtraService = new IsuExtraService();
+            var isuService = new IsuService();
+            var isuExtraService = new IsuExtraService(isuService);
             var groupName = new GroupName("K33455");
 
             // Act
-            Group group = isuExtraService.AddGroup(groupName);
+            ExtraGroup group = isuExtraService.AddGroup(groupName);
             ClassRoom classRoom = isuExtraService.AddClassRoom(789);
             ClassRoom classRoom2 = isuExtraService.AddClassRoom(1456);
             Teacher teacher = isuExtraService.AddTeacher("Petr");
@@ -84,7 +87,23 @@ namespace Isu.Extra.Test
         public void AddStudentWithoutOGNP_GroupContainsSrudentWithoutOGNP()
         {
             // Arrange
-            var isuSerivce = new IsuExtraService();
+            var isuService = new IsuService();
+            var isuExtraService = new IsuExtraService(isuService);
+            var groupName = new GroupName("K33455");
+
+            // Act
+            ExtraGroup group = isuExtraService.AddGroup(groupName);
+            ExtraStudent student = isuExtraService.AddStudent(group, "Ivan");
+
+            // Assert
+            Assert.Contains(student, group.GetStudentsListWithoutOGNP());
+        }
+
+        [Fact]
+        public void AddStudentToGroup_StudentHasGroupAndGroupContainsStudent()
+        {
+            // Arrange
+            var isuSerivce = new IsuService();
             var groupName = new GroupName("K33455");
 
             // Act
@@ -92,7 +111,68 @@ namespace Isu.Extra.Test
             Student student = isuSerivce.AddStudent(group, "Ivan");
 
             // Assert
-            Assert.Contains(student, group.GetStudentsListWithoutOGNP());
+            Assert.Equal(student.Group, group);
+            Assert.Contains(student, group.StudentsList);
+        }
+
+        [Fact]
+        public void ReachMaxStudentPerGroup_ThrowException()
+        {
+            // Arrange
+            var isuSerivce = new IsuService();
+
+            var groupName = new GroupName("K33455");
+
+            // Act
+            Group group = isuSerivce.AddGroup(groupName);
+
+            // Assert
+            Assert.Throws<AddToFullGroupException>(() =>
+                {
+                    int maxVacnadePlaces = group.GetCountVacandePlaces();
+                    for (int i = 0; i <= maxVacnadePlaces + 1; i++)
+                    {
+                        Student student = isuSerivce.AddStudent(group, $"Ivan{i}");
+                    }
+                });
+        }
+
+        [Fact]
+        public void CreateGroupWithInvalidName_ThrowException()
+        {
+            // Arrange
+            var isuSerivce = new IsuService();
+
+            // Act
+
+            // Assert
+            Assert.Throws<InvalideGroupNameException>(() =>
+                {
+                    var groupName = new GroupName("h1105");
+                    Group group = isuSerivce.AddGroup(groupName);
+                });
+        }
+
+        [Fact]
+        public void TransferStudentToAnotherGroup_GroupChanged()
+        {
+            // Arrange
+            var isuSerivce = new IsuService();
+
+            var groupName = new GroupName("K33455");
+            var groupName2 = new GroupName("K33455");
+
+            // Act
+            Group group = isuSerivce.AddGroup(groupName);
+            Group group2 = isuSerivce.AddGroup(groupName2);
+
+            Student student = isuSerivce.AddStudent(group, "Ivan");
+
+            isuSerivce.ChangeStudentGroup(student, group2);
+
+            // Assert
+            Assert.Equal(student.Group, group2);
+            Assert.Contains(student, group2.StudentsList);
         }
     }
 }

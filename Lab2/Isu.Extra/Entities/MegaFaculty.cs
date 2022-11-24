@@ -1,4 +1,4 @@
-﻿using Isu.Entities;
+﻿using Isu.Extra.GroupVersions;
 using Isu.Extra.Tools;
 
 namespace Isu.Extra.Entities
@@ -6,14 +6,14 @@ namespace Isu.Extra.Entities
     public class MegaFaculty
     {
         private List<OGNP> _listsOGNP;
-        private List<Group> groups;
+        private List<ExtraGroup> groups;
         private string _name;
         private char _symbol;
 
         public MegaFaculty(MegaFacultyName megaFacultyName)
         {
             _listsOGNP = new List<OGNP>();
-            groups = new List<Group>();
+            groups = new List<ExtraGroup>();
 
             _name = megaFacultyName.Name;
             _symbol = megaFacultyName.ShortName;
@@ -28,7 +28,7 @@ namespace Isu.Extra.Entities
             return ognp;
         }
 
-        public void AddGroup(Group group)
+        public void AddGroup(ExtraGroup group)
         {
             if (!CheckCorrectGroup(group))
             {
@@ -38,7 +38,7 @@ namespace Isu.Extra.Entities
             groups.Add(group);
         }
 
-        private bool CheckCorrectGroup(Group group)
+        private bool CheckCorrectGroup(ExtraGroup group)
         {
             return group.GroupName.MegaFacSymbol.Equals(_symbol);
         }

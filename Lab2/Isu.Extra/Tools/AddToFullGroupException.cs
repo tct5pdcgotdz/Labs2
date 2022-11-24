@@ -1,4 +1,4 @@
-﻿namespace Isu.Tools
+﻿namespace Isu.Extra.Tools
 {
     public class AddToFullGroupException : Exception
     {

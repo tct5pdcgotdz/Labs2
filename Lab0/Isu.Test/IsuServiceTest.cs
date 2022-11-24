@@ -13,7 +13,7 @@ public class IsuServiceTest
     {
         // Arrange
         var isuSerivce = new IsuService();
-        var groupName = new GroupName("A1105");
+        var groupName = new GroupName("K33455");
 
         // Act
         Group group = isuSerivce.AddGroup(groupName);
@@ -30,7 +30,7 @@ public class IsuServiceTest
         // Arrange
         var isuSerivce = new IsuService();
 
-        var groupName = new GroupName("A1105");
+        var groupName = new GroupName("K33455");
 
         // Act
         Group group = isuSerivce.AddGroup(groupName);
@@ -68,8 +68,8 @@ public class IsuServiceTest
         // Arrange
         var isuSerivce = new IsuService();
 
-        var groupName = new GroupName("A1105");
-        var groupName2 = new GroupName("A3105");
+        var groupName = new GroupName("K33455");
+        var groupName2 = new GroupName("K33455");
 
         // Act
         Group group = isuSerivce.AddGroup(groupName);
