@@ -6,7 +6,7 @@ using Isu.Extra.Tools;
 
 namespace Isu.Extra.IsuServiceVersions
 {
-    public class IsuServiceDecorator : IsuServiceBase
+    public class IsuServiceDecorator : IsuServiceBase, IIsuExtraService
     {
         private IsuServiceBase _isuService;
 
@@ -60,6 +60,7 @@ namespace Isu.Extra.IsuServiceVersions
             var student = _isuService.AddStudent(extraGroup.Group, name);
             var extraStudent = new ExtraStudent(student);
             ExtraStudents.Add(extraStudent);
+            extraGroup.AddStudent(extraStudent);
             return extraStudent;
         }
 

@@ -23,7 +23,7 @@ namespace Isu.Extra.GroupVersions
 
         public IEnumerable<ExtraStudent> GetStudentsListWithoutOGNP()
         {
-            return _studentsList.Where(student => student.OGNPFlow is null).ToList();
+            return StudentsList.Where(student => student.OGNPFlow is null).ToList();
         }
 
         public void PutLessonToTimeTable(Lesson lesson)

@@ -2,14 +2,15 @@
 {
     public class RestorePoint
     {
-        public RestorePoint()
+        private string _name;
+        public RestorePoint(string name, List<Storage> backupObjects)
         {
+            BackupObjects = backupObjects;
             DateTime = DateTime.Now;
-            Storages = new List<Storage>();
+            _name = name;
         }
 
         public DateTime DateTime { get; }
-        public List<Storage> Storages { get; }
-        public string RestoreDirectory { get; set; }
+        public List<Storage> BackupObjects { get; }
     }
 }

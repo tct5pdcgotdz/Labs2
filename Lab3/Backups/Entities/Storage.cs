@@ -1,13 +1,21 @@
-﻿namespace Backups.Entities
-{
-    public class Storage
-    {
-        public Storage()
-        {
-            BackupObjects = new List<BackupObject>();
-        }
+﻿namespace Backups.Entities;
 
-        public uint Id { get; }
-        public List<BackupObject> BackupObjects { get; }
+public class Storage
+{
+    private List<BackupObject> _backupObjects;
+
+    public Storage()
+    {
+        _backupObjects = new List<BackupObject>();
+    }
+
+    public void AddBackupObject(BackupObject backupObject)
+    {
+        _backupObjects.Add(backupObject);
+    }
+
+    public void RemoveBackupObject(BackupObject backupObject)
+    {
+        _backupObjects.Remove(backupObject);
     }
 }
