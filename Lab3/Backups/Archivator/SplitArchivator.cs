@@ -5,12 +5,14 @@ namespace Backups.Archivator
 {
     public class SplitArchivator : IArchivator
     {
-        public List<Storage> ArchiveObjectes(List<BackupObject> backupObjects, Repository repository)
+        public List<Storage> ArchiveObjectes(List<BackupObject> backupObjects, Repository repository, RestorePointInfo rpInfo)
         {
             var storagesList = new List<Storage>();
             foreach (BackupObject backupObject in backupObjects)
             {
-                string newPath = $"{repository.CurrentPath}{Path.DirectorySeparatorChar}{backupObject.GetName()}_{DateTime.Now:dd/MM/yyyy_HH-mm-ss}.zip";
+                string newPath = $"{repository.CurrentPath}" +
+                                 $"{Path.DirectorySeparatorChar}RP{rpInfo.GetId()}_{backupObject.GetName()}_" +
+                                 $"{rpInfo.DateTime:dd/MM/yyyy_HH-mm-ss}.zip";
 
                 var storage = new Storage();
                 var backupObj = new BackupObject(newPath);

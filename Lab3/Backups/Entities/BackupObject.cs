@@ -10,7 +10,7 @@
         public string Path { get; }
         public string GetName()
         {
-            return Path.Split("\\")[^1];
+            return Path.Split("\\")[^1].Split('.')[0];
         }
     }
 }

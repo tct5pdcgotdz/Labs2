@@ -2,12 +2,10 @@
 
 public class Repository
 {
-    private List<Folder> _folderList;
     private List<FileInfo> _fileList;
 
     public Repository(string path)
     {
-        _folderList = new List<Folder>();
         _fileList = new List<FileInfo>();
 
         CurrentPath = path;
@@ -20,11 +18,9 @@ public class Repository
         File.CreateText($"{CurrentPath}{Path.DirectorySeparatorChar}{fileName}");
     }
 
-    public Folder CreateDirectory(string directoryName)
+    public DirectoryInfo CreateDirectory(string directoryName)
     {
-        DirectoryInfo directoryInfo = Directory.CreateDirectory($"{CurrentPath}{Path.DirectorySeparatorChar}{directoryName}");
-        var folder = new Folder(directoryInfo);
-        return folder;
+        return Directory.CreateDirectory($"{CurrentPath}{Path.DirectorySeparatorChar}{directoryName}");
     }
 
     public void DeleteFile(string fileName)
@@ -41,16 +37,6 @@ public class Repository
         {
             Directory.Delete($"{CurrentPath}{Path.DirectorySeparatorChar}{directoryName}", true);
         }
-    }
-
-    public void CompressFiles(BackupObject jobObject, string restorePointName, string backupJobName)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void MakeArchive(string pathToDirectory, string newArchiveFileName)
-    {
-        throw new NotImplementedException();
     }
 
     public void CopyFile(string path)

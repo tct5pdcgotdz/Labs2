@@ -4,7 +4,6 @@ namespace Backups.Entities
 {
     public class BackupTask
     {
-        private Backup _backup;
         private Repository _repository;
         private string _name;
         private IArchivator _archivator;
@@ -16,10 +15,11 @@ namespace Backups.Entities
             _repository = repository;
 
             BackupObjects = new List<BackupObject>();
-            _backup = new Backup();
+            Backup = new Backup();
         }
 
         public List<BackupObject> BackupObjects { get; }
+        public Backup Backup { get; }
 
         public void AddBackupObject(BackupObject backupObject)
         {
@@ -31,11 +31,12 @@ namespace Backups.Entities
             BackupObjects.Remove(backupObject);
         }
 
-        public RestorePoint MakeRestorePoint(string nameRestorePoint)
+        public RestorePoint MakeRestorePoint()
         {
-            List<Storage> storages = _archivator.ArchiveObjectes(BackupObjects, _repository);
-            var restorePoint = new RestorePoint(nameRestorePoint, storages);
-            _backup.AddRestorePoint(restorePoint);
+            var rpInfo = new RestorePointInfo();
+            List<Storage> storages = _archivator.ArchiveObjectes(BackupObjects, _repository, rpInfo);
+            var restorePoint = new RestorePoint(storages, rpInfo);
+            Backup.AddRestorePoint(restorePoint);
             return restorePoint;
         }
     }
