@@ -4,11 +4,11 @@ namespace Backups.Entities
 {
     public class BackupTask
     {
-        private Repository _repository;
+        private RepositoryBase _repository;
         private string _name;
         private IArchivator _archivator;
 
-        public BackupTask(string name, Repository repository, IArchivator archivator)
+        public BackupTask(string name, RepositoryBase repository, IArchivator archivator)
         {
             _name = name;
             _archivator = archivator;
@@ -33,9 +33,9 @@ namespace Backups.Entities
 
         public RestorePoint MakeRestorePoint()
         {
-            var rpInfo = new RestorePointInfo();
-            List<Storage> storages = _archivator.ArchiveObjectes(BackupObjects, _repository, rpInfo);
-            var restorePoint = new RestorePoint(storages, rpInfo);
+            List<Storage> storages =
+                _repository.SaveStoragesRepository(_archivator, BackupObjects, Backup.RestorePoints.Count);
+            var restorePoint = new RestorePoint(storages, Backup.RestorePoints.Count);
             Backup.AddRestorePoint(restorePoint);
             return restorePoint;
         }

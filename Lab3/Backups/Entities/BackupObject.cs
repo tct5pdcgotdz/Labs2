@@ -2,15 +2,15 @@
 {
     public class BackupObject
     {
-        public BackupObject(string path)
+        public BackupObject(FileInfo fileInfo)
         {
-            Path = path;
+            FileInfo = fileInfo;
         }
 
-        public string Path { get; }
+        public FileInfo FileInfo { get; }
         public string GetName()
         {
-            return Path.Split("\\")[^1].Split('.')[0];
+            return FileInfo.Name;
         }
     }
 }

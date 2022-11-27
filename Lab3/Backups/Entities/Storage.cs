@@ -9,6 +9,8 @@ public class Storage
         _backupObjects = new List<BackupObject>();
     }
 
+    public IReadOnlyCollection<BackupObject> BackupObjects => _backupObjects;
+
     public void AddBackupObject(BackupObject backupObject)
     {
         _backupObjects.Add(backupObject);
