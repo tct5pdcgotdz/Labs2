@@ -18,4 +18,15 @@ public class History
     {
         _listTransaction.Remove(transaction);
     }
+
+    public decimal GetSumTransactions()
+    {
+        decimal sum = 0;
+        foreach (var transaction in _listTransaction)
+        {
+            sum += transaction.Amount;
+        }
+
+        return sum;
+    }
 }
