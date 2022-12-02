@@ -9,6 +9,7 @@ public class Bank
 {
     private List<BaseAccount> _accountList;
     private List<Client> _clientList;
+
     public Bank(string name, BankCondition bankCondition)
     {
         _accountList = new List<BaseAccount>();
@@ -23,35 +24,18 @@ public class Bank
     public IReadOnlyCollection<Client> Clients => _clientList;
     public BankCondition BankCondition { get; set; }
 
-    public Client CreateClient(string firstName, string lastName)
+    public ClientBuilder CreateClient(string firstName, string lastName)
     {
-        var client = new Client(firstName, lastName);
-        _clientList.Add(client);
-        return client;
+        var clientBuilder = new ClientBuilder(firstName, lastName);
+        _clientList.Add(clientBuilder.GetClient());
+        return clientBuilder;
     }
 
-    public CreditAccount AddCreditAccount(Client client)
+    public BaseAccount AddAccount(Client client, AccountFactory accountFabric)
     {
-        var creditAcc = new CreditAccount(client, BankCondition.DoubtClientConditions, BankCondition.CreditConditions);
-        client.AddAccount(creditAcc);
-        _accountList.Add(creditAcc);
-        return creditAcc;
-    }
-
-    public DebitAccount AddDebitAccount(Client client)
-    {
-        var debitAccount = new DebitAccount(client, BankCondition.DoubtClientConditions, BankCondition.DebitConditions);
-        client.AddAccount(debitAccount);
-        _accountList.Add(debitAccount);
-        return debitAccount;
-    }
-
-    public DepozitAccount AddDepozitAccount(Client client)
-    {
-        var depozitAccount = new DepozitAccount(client, BankCondition.DoubtClientConditions, BankCondition.DepositConditions);
-        client.AddAccount(depozitAccount);
-        _accountList.Add(depozitAccount);
-        return depozitAccount;
+        var acc = accountFabric.CreateAccount(client, BankCondition);
+        _accountList.Add(acc);
+        return acc;
     }
 
     public Transaction TransferMoneyInBank(BaseAccount fromAccount, BaseAccount toAccount, decimal money)

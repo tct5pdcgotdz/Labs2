@@ -1,4 +1,5 @@
-﻿using Banks.Condiitons;
+﻿using Banks.Accounts;
+using Banks.Condiitons;
 using Banks.Conditions;
 using Banks.Entities;
 using Banks.Temp;
@@ -12,7 +13,7 @@ public class BanksTests
     [Fact]
     public void CreatDebtAccWithdrawTooMuch_NotEnoughMoneyException()
     {
-        var centralBank = new CentralBank();
+        var centralBank = CentralBank.GetInstance();
 
         var creditConditions = new CreditConditions(10000, 3);
         var debitConditions = new DebitConditions(8.3f);
@@ -23,9 +24,9 @@ public class BanksTests
 
         Bank bank = centralBank.CreateBank("Tinpoff", bankCond);
 
-        Client client = bank.CreateClient("Arthur", "Dzuba");
+        Client client = bank.CreateClient("Arthur", "Dzuba").GetClient();
 
-        BaseAccount baseAccount = bank.AddDebitAccount(client);
+        BaseAccount baseAccount = bank.AddAccount(client, new DebitAccountFactory());
         baseAccount.Replenishment(10000);
 
         Assert.Throws<NotEnoughMoneyException>(() =>
@@ -37,7 +38,7 @@ public class BanksTests
     [Fact]
     public void CreatDebtAccTransferTooMuch_NotEnoughMoneyException()
     {
-        var centralBank = new CentralBank();
+        var centralBank = CentralBank.GetInstance();
 
         var creditConditions = new CreditConditions(10000, 3);
         var debitConditions = new DebitConditions(8.3f);
@@ -48,13 +49,13 @@ public class BanksTests
 
         Bank bank = centralBank.CreateBank("Tinpoff", bankCond);
 
-        Client client = bank.CreateClient("Arthur", "Dzuba");
-        Client client2 = bank.CreateClient("Igor", "Yurkov");
+        Client client = bank.CreateClient("Arthur", "Dzuba").GetClient();
+        Client client2 = bank.CreateClient("Igor", "Yurkov").GetClient();
 
-        BaseAccount baseAccount = bank.AddDebitAccount(client);
+        BaseAccount baseAccount = bank.AddAccount(client, new DebitAccountFactory());
         baseAccount.Replenishment(10000);
 
-        BaseAccount baseAccount2 = bank.AddDebitAccount(client2);
+        BaseAccount baseAccount2 = bank.AddAccount(client2, new DebitAccountFactory());
 
         Assert.Throws<NotEnoughMoneyException>(() =>
         {
@@ -63,9 +64,9 @@ public class BanksTests
     }
 
     [Fact]
-    public void CreatDepAccTransfer_ImpossibleWithdrawDepozitException()
+    public void CreatDepositAccTransfer_ImpossibleWithdrawDepositException()
     {
-        var centralBank = new CentralBank();
+        var centralBank = CentralBank.GetInstance();
 
         var creditConditions = new CreditConditions(10000, 3);
         var debitConditions = new DebitConditions(8.3f);
@@ -76,9 +77,10 @@ public class BanksTests
 
         Bank bank = centralBank.CreateBank("Tinpoff", bankCond);
 
-        Client client = bank.CreateClient("Arthur", "Dzuba");
+        Client client = bank.CreateClient("Arthur", "Dzuba").GetClient();
 
-        BaseAccount baseAccount = bank.AddDepozitAccount(client);
+        BaseAccount baseAccount = bank.AddAccount(client, new DepositAccountFabric());
+        baseAccount.Replenishment(10000);
 
         Assert.Throws<ImpossibleWithdrawDepozitException>(() =>
         {
@@ -89,7 +91,7 @@ public class BanksTests
     [Fact]
     public void CreateDepozAccTimeMachineMonth_AccMoneyRaise()
     {
-        var centralBank = new CentralBank();
+        var centralBank = CentralBank.GetInstance();
 
         var creditConditions = new CreditConditions(10000, 3);
         var debitConditions = new DebitConditions(8.3f);
@@ -100,9 +102,9 @@ public class BanksTests
 
         Bank bank = centralBank.CreateBank("Tinpoff", bankCond);
 
-        Client client = bank.CreateClient("Arthur", "Dzuba");
+        Client client = bank.CreateClient("Arthur", "Dzuba").GetClient();
 
-        BaseAccount baseAccount = bank.AddDepozitAccount(client);
+        BaseAccount baseAccount = bank.AddAccount(client, new DepositAccountFabric());
         baseAccount.Replenishment(100);
 
         centralBank.SetTimeMachine(31);
@@ -113,7 +115,7 @@ public class BanksTests
     [Fact]
     public void CreateDebitAccCancelTrans_TransactionCanceledMoneyBack()
     {
-        var centralBank = new CentralBank();
+        var centralBank = CentralBank.GetInstance();
 
         var creditConditions = new CreditConditions(10000, 3);
         var debitConditions = new DebitConditions(8.3f);
@@ -124,11 +126,11 @@ public class BanksTests
 
         Bank bank = centralBank.CreateBank("Tinpoff", bankCond);
 
-        Client client = bank.CreateClient("Arthur", "Dzuba");
+        Client client = bank.CreateClient("Arthur", "Dzuba").GetClient();
 
-        BaseAccount baseAccount = bank.AddDebitAccount(client);
+        BaseAccount baseAccount = bank.AddAccount(client, new DebitAccountFactory());
         baseAccount.Replenishment(100);
-        BaseAccount baseAccount2 = bank.AddDebitAccount(client);
+        BaseAccount baseAccount2 = bank.AddAccount(client, new DebitAccountFactory());
 
         Transaction transaction = bank.TransferMoneyInBank(baseAccount, baseAccount2, 50);
 
@@ -144,7 +146,7 @@ public class BanksTests
     [Fact]
     public void SubscribeClinetToChangesChangeSth_ClientHasMessage()
     {
-        var centralBank = new CentralBank();
+        var centralBank = CentralBank.GetInstance();
 
         var creditConditions = new CreditConditions(10000, 3);
         var debitConditions = new DebitConditions(8.3f);
@@ -155,7 +157,7 @@ public class BanksTests
 
         Bank bank = centralBank.CreateBank("Tinpoff", bankCond);
 
-        Client client = bank.CreateClient("Arthur", "Dzuba");
+        Client client = bank.CreateClient("Arthur", "Dzuba").GetClient();
 
         bank.SubscribeToConditionsChanges(client);
 

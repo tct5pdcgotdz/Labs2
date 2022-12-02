@@ -1,4 +1,5 @@
-﻿using Banks.Condiitons;
+﻿using Banks.Accounts;
+using Banks.Condiitons;
 using Banks.Conditions;
 using Banks.Entities;
 using Banks.Temp;
@@ -116,7 +117,7 @@ public class Program
         }
 
         Console.WriteLine();
-        return bank.CreateClient(firstName, lastName);
+        return bank.CreateClient(firstName, lastName).GetClient();
     }
 
     public static void Menu(CentralBank centralBank)
@@ -261,17 +262,17 @@ public class Program
         {
             case 1:
                 client = ChooseClient(bank);
-                bank.AddDepozitAccount(client);
+                bank.AddAccount(client, new DepositAccountFabric());
                 Console.WriteLine("[!] Successful Adding Deposit Account");
                 break;
             case 2:
                 client = ChooseClient(bank);
-                bank.AddCreditAccount(client);
+                bank.AddAccount(client, new CreditAccountFactory());
                 Console.WriteLine("[!] Successful Adding Credit Account");
                 break;
             case 3:
                 client = ChooseClient(bank);
-                bank.AddDebitAccount(client);
+                bank.AddAccount(client, new DebitAccountFactory());
                 Console.WriteLine("[!] Successful Adding Debit Account");
                 break;
             case 4:
@@ -448,7 +449,7 @@ public class Program
 
     public static void Main()
     {
-        var centralBank = new CentralBank();
+        var centralBank = CentralBank.GetInstance();
         Bank bank = EnterNewBank(centralBank);
         EnterClient(bank);
         string? exit = "YES";

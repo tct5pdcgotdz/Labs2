@@ -6,14 +6,21 @@ namespace Banks.Entities;
 
 public class CentralBank
 {
-    private List<Bank> _bankList;
+    private static CentralBank? _centralBank;
 
-    public CentralBank()
+    private readonly List<Bank> _bankList;
+
+    private CentralBank()
     {
         _bankList = new List<Bank>();
     }
 
     public IReadOnlyCollection<Bank> Banks => _bankList;
+
+    public static CentralBank GetInstance()
+    {
+        return _centralBank ??= new CentralBank();
+    }
 
     public Bank CreateBank(string name, BankCondition bankCondition)
     {
