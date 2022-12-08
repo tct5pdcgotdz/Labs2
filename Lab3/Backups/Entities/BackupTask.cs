@@ -1,25 +1,26 @@
-﻿using Backups.Archivator;
+﻿using Backups.Archivators;
+using Backups.Converter;
 
 namespace Backups.Entities
 {
     public class BackupTask
     {
-        private RepositoryBase _repository;
-        private string _name;
-        private IArchivator _archivator;
-
-        public BackupTask(string name, RepositoryBase repository, IArchivator archivator)
+        public BackupTask(Repository repository, IConverter converter, IArchivator archivator)
         {
-            _name = name;
-            _archivator = archivator;
-            _repository = repository;
+            Converter = converter;
+            Repository = repository;
+            Archivator = archivator;
 
             BackupObjects = new List<BackupObject>();
-            Backup = new Backup();
+            RestorePoints = new List<RestorePoint>();
         }
 
+        public IArchivator Archivator { get; }
+        public Repository Repository { get; }
+        public IConverter Converter { get; }
         public List<BackupObject> BackupObjects { get; }
-        public Backup Backup { get; }
+
+        public List<RestorePoint> RestorePoints { get; }
 
         public void AddBackupObject(BackupObject backupObject)
         {
@@ -33,10 +34,12 @@ namespace Backups.Entities
 
         public RestorePoint MakeRestorePoint()
         {
-            List<Storage> storages =
-                _repository.SaveStoragesRepository(_archivator, BackupObjects, Backup.RestorePoints.Count);
-            var restorePoint = new RestorePoint(storages, Backup.RestorePoints.Count);
-            Backup.AddRestorePoint(restorePoint);
+            DirectoryInfo directoryInfo = Repository.CreateDirectory($"RestorePoint_{GenerateId.GetRepositoryId()}");
+            List<Storage> storages = Converter.ConvertBackupObjectsToStorages(BackupObjects, directoryInfo.FullName);
+            Archivator.ArchiveStorages(storages);
+
+            var restorePoint = new RestorePoint(storages, Converter, directoryInfo);
+            RestorePoints.Add(restorePoint);
             return restorePoint;
         }
     }

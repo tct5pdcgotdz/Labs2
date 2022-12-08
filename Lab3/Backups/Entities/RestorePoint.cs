@@ -1,14 +1,32 @@
-﻿namespace Backups.Entities
+﻿using Backups.Archivators;
+using Backups.Converter;
+
+namespace Backups.Entities
 {
     public class RestorePoint
     {
-        public RestorePoint(List<Storage> backupObjects, int id)
+        private List<Storage> _storages;
+        public RestorePoint(IReadOnlyCollection<Storage> storages, IConverter converter, DirectoryInfo directoryInfo)
         {
-            BackupObjects = backupObjects;
-            Id = id;
+            _storages = new List<Storage>();
+            _storages.AddRange(storages);
+            DateTime = DateTime.Now;
+            Converter = converter;
+            DirectoryInfo = directoryInfo;
         }
 
-        public List<Storage> BackupObjects { get; }
-        public int Id { get; }
+        public DirectoryInfo DirectoryInfo { get; }
+
+        public IReadOnlyCollection<Storage> Storages => _storages;
+
+        public DateTime DateTime { get; private set; }
+
+        public IConverter Converter { get; private set; }
+
+        public void AddStorages(List<Storage> storages)
+        {
+            _storages.AddRange(storages);
+            DateTime = DateTime.Now;
+        }
     }
 }

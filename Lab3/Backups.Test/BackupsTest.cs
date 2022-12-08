@@ -1,4 +1,5 @@
-﻿using Backups.Archivator;
+﻿using Backups.Archivators;
+using Backups.Converter;
 using Backups.Entities;
 using Xunit;
 
@@ -9,9 +10,8 @@ namespace Backups.Test
         [Fact]
         public void SplitTest()
         {
-            var splitArchivator = new SplitArchivator();
-            var repository = new VirtualRepository("..\\..\\Backups");
-            var backupTask = new BackupTask("BackUpJob1", repository, splitArchivator);
+            var repository = new Repository("..\\..\\Backups");
+            var backupTask = new BackupTask(repository, new SplitConverter(), new VirtualArchivator());
 
             var backupObj1 = new BackupObject(new FileInfo("..\\..\\File1.txt"));
             var backupObj2 = new BackupObject(new FileInfo("..\\..\\File2.txt"));
@@ -25,8 +25,8 @@ namespace Backups.Test
 
             RestorePoint rp2 = backupTask.MakeRestorePoint();
 
-            Assert.Equal(2, backupTask.Backup.RestorePoints.Count);
-            Assert.Equal(3, rp.BackupObjects.Count + rp2.BackupObjects.Count);
+            Assert.Equal(2, backupTask.RestorePoints.Count);
+            Assert.Equal(3, rp.Storages.Count + rp2.Storages.Count);
         }
     }
 }

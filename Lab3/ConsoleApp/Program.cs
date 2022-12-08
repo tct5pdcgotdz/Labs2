@@ -1,5 +1,5 @@
-﻿using System.Diagnostics;
-using Backups.Archivator;
+﻿using Backups.Archivators;
+using Backups.Converter;
 using Backups.Entities;
 
 namespace ConsoleApp;
@@ -7,12 +7,11 @@ public class Program
 {
     public static void Main()
     {
-        var singleArchivator = new SingleArchivator();
-        var repository = new FileSystemRepository("C:\\Users\\Dzubaart\\Desktop\\TEST\\Backups");
-        var backupTask = new BackupTask("BackUpJob1", repository, singleArchivator);
+        var repository = new Repository("C:\\Users\\Dzubaart\\Desktop\\TEST\\Backups");
+        var backupTask = new BackupTask(repository, new SingleConverter(), new LocalArchivator());
 
-        var backupObj1 = new BackupObject(new FileInfo("C:\\Users\\Dzubaart\\Desktop\\TEST\\Files\\File1.txt"));
-        var backupObj2 = new BackupObject(new FileInfo("C:\\Users\\Dzubaart\\Desktop\\TEST\\Files\\File2.txt"));
+        var backupObj1 = new BackupObject(new FileInfo("C:\\Users\\Dzubaart\\Desktop\\TEST\\Files\\FileA.txt"));
+        var backupObj2 = new BackupObject(new FileInfo("C:\\Users\\Dzubaart\\Desktop\\TEST\\Files\\FileB.txt"));
 
         backupTask.AddBackupObject(backupObj1);
         backupTask.AddBackupObject(backupObj2);
